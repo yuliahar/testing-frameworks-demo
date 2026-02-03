@@ -2,91 +2,84 @@ name: Jest API Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
   api-tests:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Node.js 23.11.1
-      uses: actions/setup-node@v4
-      with:
-        node-version: '23.11.1'
-        cache: 'npm'
-    
-    - name: Install dependencies - Main App
-      run: npm install
-    
-    - name: Install dependencies - Jest Tests
-      working-directory: ./jest-tests
-      run: npm install
-    
-    - name: Start API Server
-      run: |
-        npm start &
-        sleep 5
-        curl -f http://localhost:3000/api/health || exit 1
-    
-    - name: Run Jest Tests
-      working-directory: ./jest-tests
-      run: npm run test:ci
-      env:
-        API_URL: http://localhost:3000/api
-    
-    - name: Upload Jest Test Results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: jest-test-results
-        path: |
-          jest-tests/reports/
-          jest-tests/coverage/
-        retention-days: 30
-    
-    - name: Upload JUnit Report
-      if: always()
-      uses: dorny/test-reporter@v1
-      with:
-        name: Jest Tests - Node 23.11.1
-        path: jest-tests/reports/junit.xml
-        reporter: jest-junit
-        fail-on-error: false
-    
-    - name: Publish Test Results
-      if: always()
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      with:
-        files: jest-tests/reports/junit.xml
-        check_name: Jest API Test Results - Node 23.11.1
-    
-    - name: Comment Test Results on PR
-      if: always() && github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const reportPath = 'jest-tests/reports/junit.xml';
-          if (fs.existsSync(reportPath)) {
-            const report = fs.readFileSync(reportPath, 'utf8');
-            // Parse and comment (simplified)
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ Jest API tests completed! Check the artifacts for detailed results.'
-            });
-          }
-    
-    - name: Generate Coverage Badge
-      uses: cicirello/jacoco-badge-generator@v2
-      with:
-        badges-directory: badges
-        generate-branches-badge: true
-        generate-summary: true
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 23.11.1
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23.11.1"
+          cache: "npm"
+
+      - name: Install dependencies - Main App
+        run: npm install
+
+      - name: Install dependencies - Jest Tests
+        working-directory: ./jest-tests
+        run: npm install
+
+      - name: Start API Server
+        run: |
+          npm start &
+          sleep 5
+          curl -f http://localhost:3000/api/health || exit 1
+
+      - name: Run Jest Tests
+        working-directory: ./jest-tests
+        run: npm run test:ci
+        env:
+          API_URL: http://localhost:3000/api
+
+      - name: Upload Jest Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-test-results
+          path: |
+            jest-tests/reports/
+            jest-tests/coverage/
+          retention-days: 30
+
+      - name: Upload JUnit Report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Jest Tests - Node 23.11.1
+          path: jest-tests/reports/junit.xml
+          reporter: jest-junit
+          fail-on-error: false
+
+      - name: Publish Test Results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: jest-tests/reports/junit.xml
+          check_name: Jest API Test Results - Node 23.11.1
+
+      - name: Comment Test Results on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'jest-tests/reports/junit.xml';
+            if (fs.existsSync(reportPath)) {
+              const report = fs.readFileSync(reportPath, 'utf8');
+              // Parse and comment (simplified)
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '✅ Jest API tests completed! Check the artifacts for detailed results.'
+              });
+            }
