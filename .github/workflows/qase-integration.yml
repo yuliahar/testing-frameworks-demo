@@ -1,6 +1,10 @@
 name: Qase Integration Tests
 
 on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
     inputs:
       run_name:
@@ -47,6 +51,7 @@ jobs:
           QASE_MODE: testops
           QASE_RUN_NAME: "Jest API Tests - Run #${{ github.run_number }} - ${{ github.ref_name }}"
           QASE_RUN_DESCRIPTION: "Automated API integration tests from GitHub Actions. Commit: ${{ github.sha }}"
+          QASE_RUN_COMPLETE: true
           API_URL: http://localhost:3000/api
 
       - name: Check Jest test results
@@ -126,11 +131,12 @@ jobs:
         id: cypress-tests
         run: npm run cy:run:qase -- --browser chrome
         env:
-          QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
-          QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
+          QASE_TESTOPS_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+          QASE_TESTOPS_PROJECT: ${{ secrets.QASE_PROJECT_CODE }}
           QASE_MODE: testops
-          QASE_RUN_NAME: "Cypress UI Tests - Run #${{ github.run_number }} - ${{ github.ref_name }}"
-          QASE_RUN_DESCRIPTION: "Automated UI/E2E tests from GitHub Actions. Commit: ${{ github.sha }}"
+          QASE_TESTOPS_RUN_TITLE: "Cypress UI Tests - Run #${{ github.run_number }} - ${{ github.ref_name }}"
+          QASE_TESTOPS_RUN_DESCRIPTION: "Automated UI/E2E tests from GitHub Actions. Commit: ${{ github.sha }}"
+          QASE_TESTOPS_RUN_COMPLETE: true
           CYPRESS_BASE_URL: http://localhost:3000
 
       - name: Check Cypress test results
