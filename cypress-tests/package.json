@@ -1,0 +1,31 @@
+{
+	"name": "cypress-ui-tests",
+	"version": "1.0.0",
+	"description": "Cypress UI tests for testing-frameworks-demo",
+	"scripts": {
+		"cy:open": "cypress open",
+		"cy:run": "cypress run",
+		"cy:run:chrome": "cypress run --browser chrome",
+		"cy:run:firefox": "cypress run --browser firefox",
+		"cy:run:headed": "cypress run --headed",
+		"cy:run:ci": "cypress run --browser chrome --headless --config video=true",
+		"cy:run:qase": "cypress run --env qaseReport=true"
+	},
+	"keywords": [
+		"cypress",
+		"ui-tests",
+		"e2e",
+		"testing"
+	],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"cypress": "^13.6.2",
+		"cypress-mochawesome-reporter": "^3.8.1",
+		"mochawesome": "^7.1.3",
+		"mochawesome-merge": "^4.3.0",
+		"mochawesome-report-generator": "^6.2.0",
+		"@mmisty/cypress-allure-adapter": "^1.1.1",
+		"cypress-qase-reporter": "^2.3.0"
+	}
+}

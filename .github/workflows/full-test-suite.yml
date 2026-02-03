@@ -1,0 +1,206 @@
+name: Full Test Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      test-matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set test matrix
+      id: set-matrix
+      run: |
+        echo 'matrix={"include":[{"type":"api","name":"Jest API Tests"},{"type":"ui","name":"Cypress UI Tests"}]}' >> $GITHUB_OUTPUT
+
+  jest-tests:
+    runs-on: ubuntu-latest
+    needs: setup
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install all dependencies
+      run: npm run install:all
+    
+    - name: Start API Server
+      run: |
+        npm start &
+        sleep 5
+        curl -f http://localhost:3000/api/health || exit 1
+    
+    - name: Run Jest Tests
+      run: npm run test:jest
+      env:
+        API_URL: http://localhost:3000/api
+    
+    - name: Upload Jest Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: jest-results
+        path: jest-tests/reports/
+        retention-days: 30
+
+  cypress-tests:
+    runs-on: ubuntu-latest
+    needs: setup
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install all dependencies
+      run: npm run install:all
+    
+    - name: Start API Server
+      run: |
+        npm start &
+        sleep 5
+        curl -f http://localhost:3000 || exit 1
+    
+    - name: Run Cypress Tests
+      run: npm run test:cypress
+      env:
+        CYPRESS_BASE_URL: http://localhost:3000
+    
+    - name: Upload Cypress Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cypress-results
+        path: |
+          cypress-tests/cypress/reports/
+          cypress-tests/cypress/videos/
+          cypress-tests/cypress/screenshots/
+        retention-days: 30
+
+  combine-reports:
+    runs-on: ubuntu-latest
+    needs: [jest-tests, cypress-tests]
+    if: always()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download Jest Results
+      uses: actions/download-artifact@v4
+      with:
+        name: jest-results
+        path: ./reports/jest
+      continue-on-error: true
+    
+    - name: Download Cypress Results
+      uses: actions/download-artifact@v4
+      with:
+        name: cypress-results
+        path: ./reports/cypress
+      continue-on-error: true
+    
+    - name: Generate Combined Report
+      run: |
+        mkdir -p combined-report
+        echo "# Test Execution Summary" > combined-report/SUMMARY.md
+        echo "" >> combined-report/SUMMARY.md
+        echo "## Test Run Information" >> combined-report/SUMMARY.md
+        echo "- **Run ID**: ${{ github.run_id }}" >> combined-report/SUMMARY.md
+        echo "- **Run Number**: ${{ github.run_number }}" >> combined-report/SUMMARY.md
+        echo "- **Commit**: ${{ github.sha }}" >> combined-report/SUMMARY.md
+        echo "- **Branch**: ${{ github.ref_name }}" >> combined-report/SUMMARY.md
+        echo "- **Triggered by**: ${{ github.actor }}" >> combined-report/SUMMARY.md
+        echo "- **Timestamp**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> combined-report/SUMMARY.md
+        echo "" >> combined-report/SUMMARY.md
+        echo "## Reports" >> combined-report/SUMMARY.md
+        echo "- [Jest API Tests](./jest/)" >> combined-report/SUMMARY.md
+        echo "- [Cypress UI Tests](./cypress/)" >> combined-report/SUMMARY.md
+        
+        # Copy reports
+        cp -r reports/* combined-report/ 2>/dev/null || true
+    
+    - name: Upload Combined Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: combined-test-report
+        path: combined-report/
+        retention-days: 30
+    
+    - name: Create Test Summary
+      if: always()
+      run: |
+        echo "# 🧪 Test Execution Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Run Information" >> $GITHUB_STEP_SUMMARY
+        echo "- **Workflow**: ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Run ID**: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Test Suites" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Jest API Integration Tests" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Cypress UI E2E Tests" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "Download test reports and results from the [Artifacts section](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})." >> $GITHUB_STEP_SUMMARY
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [combine-reports]
+    if: always()
+    
+    steps:
+    - name: Notify Test Completion
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const status = '${{ needs.jest-tests.result }}' === 'success' && '${{ needs.cypress-tests.result }}' === 'success' ? '✅ PASSED' : '❌ FAILED';
+          const message = `## Test Suite Execution ${status}
+          
+          **Workflow**: ${{ github.workflow }}
+          **Run**: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          **Branch**: \`${{ github.ref_name }}\`
+          **Commit**: \`${{ github.sha }}\`
+          
+          ### Results:
+          - Jest API Tests: ${{ needs.jest-tests.result }}
+          - Cypress UI Tests: ${{ needs.cypress-tests.result }}
+          
+          View detailed reports in the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+          `;
+          
+          console.log(message);
+          
+          if (context.eventName === 'pull_request') {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+          }

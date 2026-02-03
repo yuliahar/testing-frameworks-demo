@@ -1,0 +1,32 @@
+{
+  "name": "testing-frameworks-demo",
+  "version": "1.0.0",
+  "description": "Demo project showcasing Cypress and Jest testing frameworks with GitHub Actions and Qase integration",
+  "main": "app/server.js",
+  "scripts": {
+    "start": "node app/server.js",
+    "dev": "nodemon app/server.js",
+    "test:jest": "cd jest-tests && npm test",
+    "test:cypress": "cd cypress-tests && npm run cy:run",
+    "test:cypress:open": "cd cypress-tests && npm run cy:open",
+    "test:all": "npm run test:jest && npm run test:cypress",
+    "install:all": "npm install && cd cypress-tests && npm install && cd ../jest-tests && npm install && cd .."
+  },
+  "keywords": [
+    "cypress",
+    "jest",
+    "testing",
+    "qase",
+    "github-actions"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
