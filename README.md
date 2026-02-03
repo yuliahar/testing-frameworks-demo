@@ -20,8 +20,8 @@ A comprehensive demonstration project showcasing modern testing practices with A
 - **API Integration Tests**: Jest-based API testing with comprehensive coverage
 - **UI E2E Tests**: Cypress-based end-to-end testing
 - **CI/CD Pipeline**: GitHub Actions workflows with automated testing
-- **QA Dashboards**: Multiple reporting options (Allure, Mochawesome, JUnit)
-- **Test Management**: Integration ready for Qase.io, TestRail, and more
+- **QA Dashboards**: Multiple reporting options (Mochawesome, JUnit, Qase.io)
+- **Test Management**: Integration with Qase.io test management platform
 - **Beautiful Reports**: HTML reports with screenshots, videos, and metrics
 - **Code Coverage**: Automated coverage tracking and reporting
 
@@ -65,13 +65,12 @@ testing-frameworks-demo/
 │       ├── jest-tests.yml       # Jest test automation
 │       ├── cypress-tests.yml    # Cypress test automation
 │       ├── full-test-suite.yml  # Complete test suite
-│       └── allure-report.yml    # Allure report generation
+│       └── qase-integration.yml # Qase.io integration
 │
 ├── qa-dashboard/                # QA Reporting configs
 │   ├── README.md                # Dashboard documentation
 │   ├── qase-jest.config.json   # Qase integration (Jest)
-│   ├── qase-cypress.config.json # Qase integration (Cypress)
-│   └── custom-integrations.md  # Advanced integrations
+│   └── qase-cypress.config.json # Qase integration (Cypress)
 │
 ├── package.json                 # Root package.json
 └── README.md                    # This file
@@ -79,10 +78,9 @@ testing-frameworks-demo/
 
 ## 🔧 Prerequisites
 
-- **Node.js**: v18.x or v20.x
-- **npm**: v9.x or later
+- **Node.js**: v23.11.1 or later
+- **npm**: v10.x or later
 - **Git**: For version control
-- **Optional**: Allure CLI for local report generation
 
 ## 🚀 Quick Start
 
@@ -259,30 +257,17 @@ Or use the "Actions" tab in GitHub and click "Run workflow".
 1. **GitHub Actions Tab**: See workflow runs and summaries
 2. **Pull Request Comments**: Automated test result comments
 3. **Artifacts**: Download detailed reports and videos
-4. **GitHub Pages**: Access Allure reports (main branch)
-   - URL: `https://<username>.github.io/<repo>/allure-reports/<run-number>/`
+4. **Qase.io Dashboard**: View comprehensive test results and analytics
 
 ## 📊 QA Reporting & Dashboards
 
 ### Built-in Reports
 
-#### 1. Allure Reports
+#### 1. Jest HTML Reporter
 
-- **Description**: Beautiful, comprehensive test reports
-- **Features**: Historical trends, screenshots, logs, categorization
-- **Access**: Generated in CI/CD, viewable on GitHub Pages
-- **Local Setup**:
-
-  ```bash
-  # Install Allure CLI
-  brew install allure  # macOS
-
-  # Generate report
-  allure generate ./allure-results -o ./allure-report --clean
-
-  # Open report
-  allure open ./allure-report
-  ```
+- **Description**: Detailed HTML reports for Jest tests
+- **Location**: `jest-tests/reports/test-report.html`
+- **Features**: Coverage, test details, console logs
 
 #### 2. Mochawesome (Cypress)
 
@@ -290,11 +275,11 @@ Or use the "Actions" tab in GitHub and click "Run workflow".
 - **Location**: `cypress-tests/cypress/reports/`
 - **Features**: Screenshots, test duration, pass/fail rates
 
-#### 3. Jest HTML Reporter
+#### 3. Qase.io Reports
 
-- **Description**: Detailed HTML reports for Jest tests
-- **Location**: `jest-tests/reports/test-report.html`
-- **Features**: Coverage, test details, console logs
+- **Description**: Comprehensive test management platform
+- **Location**: https://app.qase.io
+- **Features**: Test runs, analytics, trends, team collaboration
 
 ### Optional Integrations
 
@@ -315,15 +300,6 @@ Test management platform with test case management and reporting.
 - **Commands**:
   - `npm run test:qase` (Jest)
   - `npm run cy:run:qase` (Cypress)
-
-#### Custom Dashboards
-
-- Grafana for real-time metrics
-- ElasticSearch + Kibana for log analysis
-- ReportPortal for AI-powered insights
-- Custom Express-based dashboard
-
-**Full guide**: See `qa-dashboard/custom-integrations.md`
 
 ## 🏗️ Architecture
 
@@ -370,94 +346,3 @@ Test management platform with test case management and reporting.
 - [Cypress Tests README](./cypress-tests/README.md)
 - [QA Dashboard Guide](./qa-dashboard/README.md)
 - [Custom Integrations](./qa-dashboard/custom-integrations.md)
-
-### Test Writing Guidelines
-
-**Jest Tests:**
-
-```javascript
-describe("Feature", () => {
-	beforeEach(async () => {
-		await api.post("/users/reset");
-	});
-
-	test("should test something", async () => {
-		const response = await api.get("/endpoint");
-		expect(response.status).toBe(200);
-	});
-});
-```
-
-**Cypress Tests:**
-
-```javascript
-describe("Feature", () => {
-	beforeEach(() => {
-		cy.visit("/");
-	});
-
-	it("should test something", () => {
-		cy.get("#element").should("be.visible");
-		cy.get("#element").click();
-	});
-});
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Run tests: `npm run test:all`
-5. Commit changes: `git commit -m 'Add amazing feature'`
-6. Push to branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Port already in use:**
-
-```bash
-# Find and kill process on port 3000
-lsof -ti:3000 | xargs kill -9
-```
-
-**Tests failing locally:**
-
-```bash
-# Ensure server is running
-npm start
-
-# In another terminal, run tests
-npm run test:jest
-```
-
-**Cypress can't connect:**
-
-```bash
-# Check server is running
-curl http://localhost:3000/api/health
-
-# Check baseUrl in cypress.config.js
-```
-
-## 📝 License
-
-ISC
-
-## 👥 Authors
-
-Created as a comprehensive testing frameworks demonstration.
-
----
-
-## 🎯 Next Steps
-
-1. **Set up GitHub repository** (if not already done)
-2. **Configure GitHub Pages** for Allure reports
-3. **Add GitHub secrets** for optional integrations (Qase, TestRail, etc.)
-4. **Customize workflows** to match your needs
-5. **Explore custom dashboards** in `qa-dashboard/custom-integrations.md`
-6. **Integrate with your test management platform**

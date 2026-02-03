@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 # Check Node.js installation
 echo -e "${BLUE}Checking Node.js installation...${NC}"
 if ! command -v node &> /dev/null; then
-    echo -e "${YELLOW}Node.js is not installed. Please install Node.js 18.x or 20.x${NC}"
+    echo -e "${YELLOW}Node.js is not installed. Please install Node.js 23.11.1 or later${NC}"
     exit 1
 fi
 
@@ -58,23 +58,11 @@ cd ..
 echo -e "${GREEN}✓ Cypress test dependencies installed${NC}"
 echo ""
 
-# Check if Allure is installed (optional)
-echo -e "${BLUE}Checking Allure CLI installation (optional)...${NC}"
-if command -v allure &> /dev/null; then
-    ALLURE_VERSION=$(allure --version)
-    echo -e "${GREEN}✓ Allure CLI found: $ALLURE_VERSION${NC}"
-else
-    echo -e "${YELLOW}⚠ Allure CLI not found. Install it for local report generation:${NC}"
-    echo "   macOS: brew install allure"
-    echo "   Linux: See https://docs.qameta.io/allure/#_installing_a_commandline"
-fi
-echo ""
 
 # Create necessary directories
 echo -e "${BLUE}Creating necessary directories...${NC}"
-mkdir -p jest-tests/reports jest-tests/coverage jest-tests/allure-results
+mkdir -p jest-tests/reports jest-tests/coverage
 mkdir -p cypress-tests/cypress/reports cypress-tests/cypress/videos cypress-tests/cypress/screenshots
-mkdir -p allure-report
 echo -e "${GREEN}✓ Directories created${NC}"
 echo ""
 

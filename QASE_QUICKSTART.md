@@ -139,7 +139,7 @@ QASE_DEBUG=true npm run test:qase
 2. 📝 Read full guide: [QASE_SETUP.md](./QASE_SETUP.md)
 3. 🎯 Add test case IDs for better tracking
 4. 📊 Explore Qase dashboard features
-5. 🔗 Connect to Jira, Slack, etc.
+5. 🔗 Explore Qase integrations (Jira, etc.)
 
 ---
 

@@ -300,7 +300,7 @@ Push your code or create a PR, and GitHub Actions will automatically:
 - 🔍 **Defects**: Link test failures to defects
 - 📋 **Test Cases**: Maintain test case repository
 - 🎯 **Test Plans**: Group tests into plans
-- 🔄 **Integrations**: Connect to Jira, Slack, etc.
+- 🔄 **Integrations**: Connect to Jira and other tools
 
 ## Advanced Configuration
 

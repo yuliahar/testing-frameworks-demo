@@ -11,18 +11,14 @@ jobs:
   api-tests:
     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js 23.11.1
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '23.11.1'
         cache: 'npm'
     
     - name: Install dependencies - Main App
@@ -48,7 +44,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: jest-test-results-${{ matrix.node-version }}
+        name: jest-test-results
         path: |
           jest-tests/reports/
           jest-tests/coverage/
@@ -58,7 +54,7 @@ jobs:
       if: always()
       uses: dorny/test-reporter@v1
       with:
-        name: Jest Tests - Node ${{ matrix.node-version }}
+        name: Jest Tests - Node 23.11.1
         path: jest-tests/reports/junit.xml
         reporter: jest-junit
         fail-on-error: false
@@ -68,7 +64,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
         files: jest-tests/reports/junit.xml
-        check_name: Jest API Test Results - Node ${{ matrix.node-version }}
+        check_name: Jest API Test Results - Node 23.11.1
     
     - name: Comment Test Results on PR
       if: always() && github.event_name == 'pull_request'
@@ -89,7 +85,6 @@ jobs:
           }
     
     - name: Generate Coverage Badge
-      if: matrix.node-version == '20.x'
       uses: cicirello/jacoco-badge-generator@v2
       with:
         badges-directory: badges

@@ -4,8 +4,8 @@ Get up and running with the Testing Frameworks Demo in 5 minutes!
 
 ## Prerequisites
 
-- Node.js (v18.x or v20.x)
-- npm (v9.x or later)
+- Node.js (v23.11.1 or later)
+- npm (v10.x or later)
 
 ## Installation
 

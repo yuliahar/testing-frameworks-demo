@@ -5,6 +5,7 @@
 A complete, production-ready testing demonstration project with:
 
 ### 1. **Full-Stack Application** ✅
+
 - **Backend**: Express.js REST API with user management
   - CRUD operations (Create, Read, Update, Delete)
   - Input validation and error handling
@@ -17,7 +18,9 @@ A complete, production-ready testing demonstration project with:
   - Mobile-responsive layout
 
 ### 2. **API Integration Tests (Jest)** ✅
+
 Located in: `jest-tests/`
+
 - Comprehensive API endpoint testing
 - HTTP status code validation
 - Request/response validation
@@ -26,6 +29,7 @@ Located in: `jest-tests/`
 - Multiple report formats (HTML, JUnit, Coverage)
 
 **Test Coverage:**
+
 - 40+ test cases
 - Health check endpoint
 - GET operations (all users, by ID, 404s)
@@ -35,7 +39,9 @@ Located in: `jest-tests/`
 - Integration flows
 
 ### 3. **UI E2E Tests (Cypress)** ✅
+
 Located in: `cypress-tests/`
+
 - End-to-end user interface testing
 - Browser automation (Chrome, Firefox)
 - Visual regression testing
@@ -43,6 +49,7 @@ Located in: `cypress-tests/`
 - Screenshot and video capture
 
 **Test Coverage:**
+
 - 20+ test scenarios
 - Page load and rendering
 - Form interactions and validations
@@ -52,43 +59,50 @@ Located in: `cypress-tests/`
 - Complete user workflows
 
 ### 4. **CI/CD Pipelines (GitHub Actions)** ✅
+
 Located in: `.github/workflows/`
 
 **4 Automated Workflows:**
 
 1. **`jest-tests.yml`** - API Tests
+
    - Runs on: Push, PR, Manual
    - Matrix: Node 18.x & 20.x
    - Features: Test reports, PR comments, artifacts
 
 2. **`cypress-tests.yml`** - UI Tests
+
    - Runs on: Push, PR, Manual
    - Matrix: Chrome & Firefox
    - Features: Videos, screenshots, multi-browser
 
 3. **`full-test-suite.yml`** - Complete Suite
+
    - Runs on: Push to main, PR, Daily, Manual
    - Features: Combined reports, notifications
 
-4. **`allure-report.yml`** - Report Generation
-   - Runs after: Test completion
-   - Features: Allure reports, GitHub Pages deployment
+4. **`qase-integration.yml`** - Qase.io Integration
+   - Runs on: Push, PR, Daily, Manual
+   - Features: Automatic test reporting to Qase.io
 
 ### 5. **QA Reporting & Dashboards** ✅
+
 Located in: `qa-dashboard/`
 
 **Included:**
-- Allure Reports configuration
-- Qase.io integration setup
-- TestRail integration guides
-- Custom dashboard templates
+
+- Qase.io integration (fully configured)
+- Jest HTML Reporter
+- Mochawesome (Cypress)
+- JUnit XML for CI/CD
 - Multiple report formats
 
 **Reports Generated:**
-- HTML test reports
+
+- HTML test reports (Jest & Cypress)
 - JUnit XML (CI/CD integration)
 - Code coverage reports
-- Allure comprehensive reports
+- Qase.io comprehensive reports
 - Mochawesome reports (Cypress)
 - Test execution videos
 - Failure screenshots
@@ -96,6 +110,7 @@ Located in: `qa-dashboard/`
 ### 6. **Documentation** ✅
 
 **Complete Documentation Set:**
+
 - `README.md` - Main project documentation
 - `QUICKSTART.md` - 5-minute setup guide
 - `DEPLOYMENT.md` - CI/CD and deployment guide
@@ -119,7 +134,7 @@ testing-frameworks-demo/
 │
 ├── 🧪 jest-tests/                    # API Tests
 │   ├── tests/api.test.js            # Test suite
-│   ├── jest-allure.config.js        # Allure config
+│   ├── jest-qase.config.js          # Qase config
 │   ├── package.json
 │   └── README.md
 │
@@ -135,7 +150,7 @@ testing-frameworks-demo/
 │   ├── jest-tests.yml               # API tests workflow
 │   ├── cypress-tests.yml            # UI tests workflow
 │   ├── full-test-suite.yml          # Complete suite
-│   └── allure-report.yml            # Report generation
+│   └── qase-integration.yml         # Qase.io integration
 │
 ├── 📊 qa-dashboard/                  # QA Reporting
 │   ├── README.md                    # Dashboard docs
@@ -164,6 +179,7 @@ testing-frameworks-demo/
 ## Key Features
 
 ### Testing Features
+
 - ✅ **Multi-level Testing**: Unit, Integration, E2E
 - ✅ **Multi-browser Support**: Chrome, Firefox
 - ✅ **Code Coverage**: Automated coverage reports
@@ -173,6 +189,7 @@ testing-frameworks-demo/
 - ✅ **Data Reset**: Automatic test data cleanup
 
 ### CI/CD Features
+
 - ✅ **Automated Testing**: Run tests on every push/PR
 - ✅ **Matrix Testing**: Multiple Node versions & browsers
 - ✅ **PR Comments**: Automatic test result comments
@@ -182,44 +199,50 @@ testing-frameworks-demo/
 - ✅ **Status Badges**: Test status in README
 
 ### Reporting Features
+
 - ✅ **Multiple Formats**: HTML, JUnit, JSON
-- ✅ **Rich Reports**: Allure with trends and analytics
+- ✅ **Rich Reports**: Qase.io with trends and analytics
 - ✅ **Test Metrics**: Pass/fail rates, duration
 - ✅ **Historical Data**: Track trends over time
-- ✅ **GitHub Pages**: Public report hosting
+- ✅ **Test Management**: Comprehensive Qase.io integration
 - ✅ **Coverage Reports**: Code coverage visualization
 
 ### Integration Features
-- ✅ **Qase.io Ready**: Test management integration
-- ✅ **TestRail Ready**: Enterprise test management
-- ✅ **Slack/Discord**: Notification support
-- ✅ **Custom Dashboards**: Grafana, Kibana guides
-- ✅ **ReportPortal**: AI-powered reporting
+
+- ✅ **Qase.io**: Full test management integration
+- ✅ **GitHub Actions**: Automated CI/CD workflows
+- ✅ **PR Comments**: Automatic test result comments
+- ✅ **Artifact Storage**: Test reports and videos
 
 ## Technology Stack
 
 ### Application
+
 - **Backend**: Node.js, Express.js
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Database**: In-memory (for demo)
 
 ### Testing
+
 - **API Tests**: Jest, Axios
 - **UI Tests**: Cypress
-- **Reporters**: Jest HTML Reporter, Mochawesome, Allure
+- **Reporters**: Jest HTML Reporter, Mochawesome, Qase.io
 
 ### CI/CD
+
 - **Platform**: GitHub Actions
 - **Deployment**: Ready for Heroku, Vercel, AWS, Docker
 
 ### QA Tools
-- **Reporting**: Allure, JUnit, HTML
-- **Management**: Qase.io, TestRail (optional)
+
+- **Reporting**: Qase.io, JUnit, HTML
+- **Management**: Qase.io test management platform
 - **Analytics**: Coverage reports, test metrics
 
 ## Getting Started
 
 ### Option 1: Automated (Recommended)
+
 ```bash
 ./setup.sh
 npm start
@@ -227,6 +250,7 @@ npm run test:all
 ```
 
 ### Option 2: Manual
+
 ```bash
 npm run install:all
 npm start
@@ -235,6 +259,7 @@ npm run test:cypress:open
 ```
 
 ### Option 3: Quick Test
+
 ```bash
 # Terminal 1
 npm start
@@ -249,12 +274,14 @@ npm run test:cypress
 ## Next Steps
 
 ### Immediate (5 minutes)
+
 1. ✅ Run setup script: `./setup.sh`
 2. ✅ Start application: `npm start`
 3. ✅ Run tests: `npm run test:all`
 4. ✅ View reports in browser
 
 ### Short Term (1 hour)
+
 1. ✅ Push to GitHub
 2. ✅ Enable GitHub Actions
 3. ✅ Set up GitHub Pages
@@ -262,6 +289,7 @@ npm run test:cypress
 5. ✅ Customize for your needs
 
 ### Medium Term (1 day)
+
 1. ✅ Configure branch protection
 2. ✅ Add GitHub secrets (if using integrations)
 3. ✅ Deploy to production
@@ -269,6 +297,7 @@ npm run test:cypress
 5. ✅ Integrate with test management tools
 
 ### Long Term (Ongoing)
+
 1. ✅ Add more test cases
 2. ✅ Set up custom dashboards
 3. ✅ Monitor test trends
@@ -311,24 +340,28 @@ open jest-tests/coverage/lcov-report/index.html
 ## What You Can Do With This Project
 
 ### Learning & Education
+
 - ✅ Learn modern testing practices
 - ✅ Understand CI/CD workflows
 - ✅ Explore test automation
 - ✅ Study API and UI testing patterns
 
 ### Development
+
 - ✅ Use as a template for new projects
 - ✅ Copy testing patterns
 - ✅ Adapt CI/CD workflows
 - ✅ Customize for specific needs
 
 ### Demonstration
+
 - ✅ Show testing capabilities to stakeholders
 - ✅ Present at conferences or meetups
 - ✅ Use in portfolio
 - ✅ Training and workshops
 
 ### Production
+
 - ✅ Extend for real applications
 - ✅ Add authentication
 - ✅ Connect to real database
@@ -337,6 +370,7 @@ open jest-tests/coverage/lcov-report/index.html
 ## Success Metrics
 
 The project is successful if:
+
 - ✅ All tests pass
 - ✅ Reports are generated
 - ✅ CI/CD pipelines work
@@ -347,6 +381,7 @@ The project is successful if:
 ## Troubleshooting
 
 See individual README files for specific issues:
+
 - General: [README.md](./README.md)
 - Jest: [jest-tests/README.md](./jest-tests/README.md)
 - Cypress: [cypress-tests/README.md](./cypress-tests/README.md)
@@ -355,10 +390,11 @@ See individual README files for specific issues:
 ## Credits & Resources
 
 Built with:
+
 - [Express.js](https://expressjs.com/)
 - [Jest](https://jestjs.io/)
 - [Cypress](https://www.cypress.io/)
-- [Allure](https://docs.qameta.io/allure/)
+- [Qase.io](https://qase.io/)
 - [GitHub Actions](https://github.com/features/actions)
 
 ---
@@ -368,6 +404,7 @@ Built with:
 ✨ **You now have a complete, production-ready testing framework demo!**
 
 This project demonstrates:
+
 - Modern testing practices (API + UI)
 - CI/CD automation with GitHub Actions
 - Comprehensive QA reporting and dashboards
@@ -378,4 +415,4 @@ This project demonstrates:
 
 ---
 
-*Last Updated: 2026-02-03*
+_Last Updated: 2026-02-03_
