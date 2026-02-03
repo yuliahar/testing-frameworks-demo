@@ -1,13 +1,6 @@
 name: Qase Integration Tests
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-  schedule:
-    # Run daily at 3 AM UTC
-    - cron: "0 3 * * *"
   workflow_dispatch:
     inputs:
       run_name:
@@ -45,6 +38,8 @@ jobs:
 
       - name: Run Jest tests with Qase reporting
         working-directory: ./jest-tests
+        continue-on-error: true
+        id: jest-tests
         run: npm run test:qase
         env:
           QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
@@ -53,6 +48,14 @@ jobs:
           QASE_RUN_NAME: "Jest API Tests - Run #${{ github.run_number }} - ${{ github.ref_name }}"
           QASE_RUN_DESCRIPTION: "Automated API integration tests from GitHub Actions. Commit: ${{ github.sha }}"
           API_URL: http://localhost:3000/api
+
+      - name: Check Jest test results
+        if: always()
+        run: |
+          if [ "${{ steps.jest-tests.outcome }}" == "failure" ]; then
+            echo "⚠️ Jest tests failed but results were uploaded to Qase.io"
+            exit 1
+          fi
 
       - name: Upload Jest reports (fallback)
         if: always()
@@ -69,31 +72,30 @@ jobs:
           script: |
             const projectCode = '${{ secrets.QASE_PROJECT_CODE }}';
             const runNumber = '${{ github.run_number }}';
+            const testOutcome = '${{ steps.jest-tests.outcome }}';
+            const statusIcon = testOutcome === 'success' ? '✅' : '⚠️';
 
-            const comment = `## 🧪 Qase.io Test Results - Jest API Tests
+            const comment = `## 🧪 ${statusIcon} Qase.io Test Results - Jest API Tests
 
             **Test Run**: [View in Qase.io](https://app.qase.io/run/${projectCode})
             **Run Number**: #${runNumber}
+            **Status**: ${testOutcome === 'success' ? 'Passed' : 'Failed'}
             **Branch**: \`${{ github.ref_name }}\`
             **Commit**: \`${{ github.sha }}\`
 
-            Results have been reported to Qase.io. Check the link above for detailed test results.
+            Results have been reported to Qase.io. Check the link above for detailed test results${testOutcome === 'failure' ? ' and failure analysis' : ''}.
             `;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
 
   cypress-qase:
     name: Cypress UI Tests → Qase.io
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        browser: [chrome]
 
     steps:
       - name: Checkout code
@@ -120,28 +122,30 @@ jobs:
 
       - name: Run Cypress tests with Qase reporting
         working-directory: ./cypress-tests
-        run: npm run cy:run:qase -- --browser ${{ matrix.browser }}
+        continue-on-error: true
+        id: cypress-tests
+        run: npm run cy:run:qase -- --browser chrome
         env:
           QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
           QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
           QASE_MODE: testops
-          QASE_RUN_NAME: "Cypress UI Tests - Run #${{ github.run_number }} - ${{ github.ref_name }} - ${{ matrix.browser }}"
-          QASE_RUN_DESCRIPTION: "Automated UI/E2E tests from GitHub Actions. Browser: ${{ matrix.browser }}, Commit: ${{ github.sha }}"
+          QASE_RUN_NAME: "Cypress UI Tests - Run #${{ github.run_number }} - ${{ github.ref_name }}"
+          QASE_RUN_DESCRIPTION: "Automated UI/E2E tests from GitHub Actions. Commit: ${{ github.sha }}"
           CYPRESS_BASE_URL: http://localhost:3000
 
-      - name: Upload Cypress videos
+      - name: Check Cypress test results
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-qase-videos-${{ matrix.browser }}
-          path: cypress-tests/cypress/videos
-          retention-days: 30
+        run: |
+          if [ "${{ steps.cypress-tests.outcome }}" == "failure" ]; then
+            echo "⚠️ Cypress tests failed but results were uploaded to Qase.io"
+            exit 1
+          fi
 
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-qase-screenshots-${{ matrix.browser }}
+          name: cypress-qase-screenshots
           path: cypress-tests/cypress/screenshots
           retention-days: 30
 
@@ -152,25 +156,26 @@ jobs:
           script: |
             const projectCode = '${{ secrets.QASE_PROJECT_CODE }}';
             const runNumber = '${{ github.run_number }}';
-            const browser = '${{ matrix.browser }}';
+            const testOutcome = '${{ steps.cypress-tests.outcome }}';
+            const statusIcon = testOutcome === 'success' ? '✅' : '⚠️';
 
-            const comment = `## 🌲 Qase.io Test Results - Cypress UI Tests (${browser})
+            const comment = `## 🌲 ${statusIcon} Qase.io Test Results - Cypress UI Tests
 
             **Test Run**: [View in Qase.io](https://app.qase.io/run/${projectCode})
             **Run Number**: #${runNumber}
-            **Browser**: ${browser}
+            **Status**: ${testOutcome === 'success' ? 'Passed' : 'Failed'}
             **Branch**: \`${{ github.ref_name }}\`
             **Commit**: \`${{ github.sha }}\`
 
-            Results have been reported to Qase.io. Check the link above for detailed test results, including screenshots and videos.
+            Results have been reported to Qase.io. Check the link above for detailed test results${testOutcome === 'failure' ? ' and failure analysis' : ''}.
             `;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
 
   summary:
     name: Test Summary

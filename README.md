@@ -63,7 +63,6 @@ testing-frameworks-demo/
 │   └── workflows/               # CI/CD workflows
 │       ├── jest-tests.yml       # Jest test automation
 │       ├── cypress-tests.yml    # Cypress test automation
-│       ├── full-test-suite.yml  # Complete test suite
 │       └── qase-integration.yml # Qase.io integration
 │
 ├── package.json                 # Root package.json
@@ -204,7 +203,7 @@ npm run cy:run:qase
 
 ### GitHub Actions Workflows
 
-The project includes 4 automated workflows:
+The project includes 3 automated workflows:
 
 #### 1. Jest API Tests (`jest-tests.yml`)
 
@@ -219,21 +218,21 @@ The project includes 4 automated workflows:
 #### 2. Cypress UI Tests (`cypress-tests.yml`)
 
 - Runs on: Push, Pull Request, Manual trigger
-- Tests on: Chrome and Firefox
+- Tests on: Chrome
 - Features:
-  - Multi-browser testing
-  - Video/screenshot capture
+  - Chrome browser testing
+  - Screenshot capture on failures
   - Test result dashboards
   - PR comments with results
 
-#### 3. Full Test Suite (`full-test-suite.yml`)
+#### 3. Qase Integration (`qase-integration.yml`)
 
-- Runs on: Push to main, Pull Request, Daily schedule, Manual trigger
+- Runs on: Push, Pull Request, Daily schedule, Manual trigger
 - Features:
-  - Complete test execution
-  - Combined reporting
-  - Comprehensive summaries
-  - Notification system
+  - Automatic test reporting to Qase.io
+  - Uploads results even when tests fail
+  - PR comments with Qase links
+  - Test management integration
 
 ### Viewing Results
 

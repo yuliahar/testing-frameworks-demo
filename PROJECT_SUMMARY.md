@@ -149,7 +149,6 @@ testing-frameworks-demo/
 ├── 🔄 .github/workflows/             # CI/CD
 │   ├── jest-tests.yml               # API tests workflow
 │   ├── cypress-tests.yml            # UI tests workflow
-│   ├── full-test-suite.yml          # Complete suite
 │   └── qase-integration.yml         # Qase.io integration
 │
 ├── 📊 qa-dashboard/                  # QA Reporting
