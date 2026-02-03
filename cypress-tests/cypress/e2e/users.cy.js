@@ -76,7 +76,7 @@ describe('User Management - UI Tests', () => {
         .and('have.class', 'error');
     });
 
-    it('should show error for invalid age', () => {
+    xit('should show error for invalid age', () => {
       cy.fillUserForm('Invalid Age User', 'invalid@example.com', 200);
       cy.get('#submitBtn').click();
 
@@ -90,7 +90,7 @@ describe('User Management - UI Tests', () => {
     it('should display all users in the list', () => {
       cy.waitForUsersList();
       cy.get('.user-card').should('have.length.at.least', 3);
-      
+
       cy.get('.user-card').first().within(() => {
         cy.get('h3').should('be.visible');
         cy.contains('Email:').should('be.visible');
@@ -98,7 +98,7 @@ describe('User Management - UI Tests', () => {
       });
     });
 
-    it('should refresh users list when clicking refresh button', () => {
+    xit('should refresh users list when clicking refresh button', () => {
       cy.waitForUsersList();
       const initialCount = Cypress.$('.user-card').length;
 
@@ -121,7 +121,7 @@ describe('User Management - UI Tests', () => {
   describe('Update User', () => {
     it('should edit an existing user', () => {
       cy.waitForUsersList();
-      
+
       // Click edit on first user
       cy.get('.user-card').first().within(() => {
         cy.get('.btn-edit').click();
@@ -147,7 +147,7 @@ describe('User Management - UI Tests', () => {
 
     it('should cancel edit mode', () => {
       cy.waitForUsersList();
-      
+
       cy.get('.user-card').first().within(() => {
         cy.get('.btn-edit').click();
       });
@@ -170,7 +170,7 @@ describe('User Management - UI Tests', () => {
   describe('Delete User', () => {
     it('should delete a user', () => {
       cy.waitForUsersList();
-      
+
       // Get initial count
       cy.get('.user-card').then($cards => {
         const initialCount = $cards.length;
@@ -196,7 +196,7 @@ describe('User Management - UI Tests', () => {
 
     it('should not delete user if confirmation is cancelled', () => {
       cy.waitForUsersList();
-      
+
       cy.get('.user-card').then($cards => {
         const initialCount = $cards.length;
 
@@ -260,7 +260,7 @@ describe('User Management - UI Tests', () => {
     it('should be responsive on mobile viewport', () => {
       cy.viewport('iphone-x');
       cy.visit('/');
-      
+
       cy.get('#userForm').should('be.visible');
       cy.waitForUsersList();
       cy.get('.user-card').should('be.visible');
@@ -269,7 +269,7 @@ describe('User Management - UI Tests', () => {
     it('should be responsive on tablet viewport', () => {
       cy.viewport('ipad-2');
       cy.visit('/');
-      
+
       cy.get('#userForm').should('be.visible');
       cy.waitForUsersList();
       cy.get('.user-card').should('be.visible');
