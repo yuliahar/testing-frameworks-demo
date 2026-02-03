@@ -20,7 +20,6 @@ A comprehensive demonstration project showcasing modern testing practices with A
 - **API Integration Tests**: Jest-based API testing with comprehensive coverage
 - **UI E2E Tests**: Cypress-based end-to-end testing
 - **CI/CD Pipeline**: GitHub Actions workflows with automated testing
-- **QA Dashboards**: Multiple reporting options (Mochawesome, JUnit, Qase.io)
 - **Test Management**: Integration with Qase.io test management platform
 - **Beautiful Reports**: HTML reports with screenshots, videos, and metrics
 - **Code Coverage**: Automated coverage tracking and reporting
@@ -66,11 +65,6 @@ testing-frameworks-demo/
 │       ├── cypress-tests.yml    # Cypress test automation
 │       ├── full-test-suite.yml  # Complete test suite
 │       └── qase-integration.yml # Qase.io integration
-│
-├── qa-dashboard/                # QA Reporting configs
-│   ├── README.md                # Dashboard documentation
-│   ├── qase-jest.config.json   # Qase integration (Jest)
-│   └── qase-cypress.config.json # Qase integration (Cypress)
 │
 ├── package.json                 # Root package.json
 └── README.md                    # This file
@@ -215,7 +209,7 @@ The project includes 4 automated workflows:
 #### 1. Jest API Tests (`jest-tests.yml`)
 
 - Runs on: Push, Pull Request, Manual trigger
-- Tests on: Node 18.x and 20.x
+- Tests on: Node 23.11.1
 - Features:
   - Automated test execution
   - Test result reporting
@@ -240,17 +234,6 @@ The project includes 4 automated workflows:
   - Combined reporting
   - Comprehensive summaries
   - Notification system
-
-### Triggering Workflows Manually
-
-```bash
-# Via GitHub CLI
-gh workflow run "Full Test Suite"
-gh workflow run "Jest API Tests"
-gh workflow run "Cypress UI Tests"
-```
-
-Or use the "Actions" tab in GitHub and click "Run workflow".
 
 ### Viewing Results
 
